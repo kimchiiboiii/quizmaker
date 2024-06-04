@@ -1,10 +1,9 @@
 import wx
-from flashcardapp import FlashcardApp
 from menu import MenuFrame
 
 def main():
     app = wx.App(False)
-    frame = Test(None, title='Test')
+    frame = MenuFrame(None, title='Test')
     frame.Show(True)
     app.MainLoop()
 

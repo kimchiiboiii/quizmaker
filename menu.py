@@ -1,13 +1,16 @@
 import wx
+import wx.aui
 from flashcardapp import FlashcardApp
 from dialogs import NewFileDialogue
 
 class MenuFrame(wx.Frame):
     def __init__(self, parent, title):
         wx.Frame.__init__(self, parent, title=title, size=(1080, 720))
-        self.control = wx.TextCtrl(self, style=wx.TE_MULTILINE)
+        # self.control = wx.TextCtrl(self, style=wx.TE_MULTILINE)
+        self.mgr = wx.aui.AuiManager(self)
         self.CreateStatusBar()
         self.Centre()
+        self.createPane()
 
         
         # Setting up the menu.
@@ -48,18 +51,26 @@ class MenuFrame(wx.Frame):
 
 
     def OnNew(self, event):
-        dlg = NewFileDialogue(self)
-        dlg.ShowModal()
-        dlg.Destroy()
+        nfdialogue = NewFileDialogue(self)
+        nfdialogue.ShowModal()
+        nfdialogue.Destroy()
     
     def OnAbout(self, event):
-        dlg = wx.MessageDialog(self, "A quiz maker.", "About Quiz Maker", wx.OK)
-        dlg.ShowModal()
-        dlg.Destroy()
+        nfdialogue = wx.MessageDialog(self, "A quiz maker.", "About Quiz Maker", wx.OK)
+        nfdialogue.ShowModal()
+        nfdialogue.Destroy()
 
     def OnExit(self, event):
         self.Close(True)
 
     def OnLoad(self, event):
         self.flashcard_app = FlashcardApp(None, "Flashcards")
+        self.flashcard_app.SetPosition(wx.Point(900, 400))
         self.flashcard_app.Show(True)
+
+    def createPane(self):
+        # mgr = wx.aui.AuiManager(self)
+        text1 = wx.TextCtrl(self)
+        self.mgr.AddPane(text1, wx.aui.AuiPaneInfo().Bottom().BestSize(
+            wx.Size(200, 200)))
+        self.mgr.Update()

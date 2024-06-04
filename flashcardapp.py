@@ -23,6 +23,9 @@ class FlashcardApp(wx.Frame):
         self.show_button = wx.Button(self, label="Show Answer")
         self.show_button.Bind(wx.EVT_BUTTON, self.on_show)
 
+        self.shuffle_button = wx.Button(self, label="Shuffle")
+        self.shuffle_button.Bind(wx.EVT_BUTTON, self.shuffle_cards)
+
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.question_label, 0, wx.ALL, 15)
         sizer.Add(self.answer_label, 0, wx.ALL, 15)
@@ -30,6 +33,7 @@ class FlashcardApp(wx.Frame):
         horizontal_sizer = wx.BoxSizer(wx.HORIZONTAL)
         horizontal_sizer.Add(self.next_button, 0, wx.TOP, 15)
         horizontal_sizer.Add(self.show_button, 0, wx.TOP, 15)
+        horizontal_sizer.Add(self.shuffle_button, 0, wx.TOP, 15)
 
         sizer.Add(horizontal_sizer, 0, wx.ALL, 5)
         self.SetSizer(sizer)
@@ -84,5 +88,12 @@ class FlashcardApp(wx.Frame):
             self.current_card = 0
         
         self.answer_label.Hide()
+        self.show_flashcard()
+        self.Layout()
+
+    def shuffle_cards(self, event):
+        import random
+        random.shuffle(self.flashcards)
+        self.current_card = 0
         self.show_flashcard()
         self.Layout()
