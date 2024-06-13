@@ -27,15 +27,15 @@ class FlashcardApp(wx.Frame):
         self.shuffle_button.Bind(wx.EVT_BUTTON, self.shuffle_cards)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self.question_label, 0, wx.ALL, 15)
-        sizer.Add(self.answer_label, 0, wx.ALL, 15)
+        sizer.Add(self.question_label, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.ALL, 15)
+        sizer.Add(self.answer_label, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.TOP, 30)
         
-        horizontal_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        horizontal_sizer.Add(self.next_button, 0, wx.TOP, 15)
-        horizontal_sizer.Add(self.show_button, 0, wx.TOP, 15)
-        horizontal_sizer.Add(self.shuffle_button, 0, wx.TOP, 15)
+        buttons_grid = wx.FlexGridSizer(3, 90, 0)
+        buttons_grid.Add(self.next_button, 0, 15)
+        buttons_grid.Add(self.show_button, 0, 15)
+        buttons_grid.Add(self.shuffle_button, 0, 15)
 
-        sizer.Add(horizontal_sizer, 0, wx.ALL, 5)
+        sizer.Add(buttons_grid, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.TOP, 60)
         self.SetSizer(sizer)
         self.Layout()
         self.load_flashcards("quiz.txt")
@@ -51,17 +51,29 @@ class FlashcardApp(wx.Frame):
         self.flashcards = []
         line_index = 0
         while line_index < len(lines):
-            if lines[line_index].strip() == "":
+            if lines[line_index].strip() == "": # Once we hit an empty line, skip one line then continue loop
                 line_index += 1
                 continue
             
-            # Checks if lines are in correct format with ": "
-            if line_index + 2 < len(lines) and \
+            # Checks if text matches the correct format
+            # Format: 3 lines with "Question: ", "Answer: ", and "Label: "
+            # followed by a blank line. 
+            try: 
+                if line_index + 2 < len(lines) and \
                 all(": " in lines[count] for count in range(line_index, line_index + 3)):
-                questions, answer, label = [line.strip().split(": ")[1] for line in lines[line_index:line_index + 3]]
-                self.flashcards.append(Flashcard(questions, answer, label))
-                line_index += 3
-            else:
+                    
+                    questions, answer, label = [line.strip().split(": ")[1] for line in lines[line_index:line_index + 3]]
+                    self.flashcards.append(Flashcard(questions, answer, label))
+                    line_index += 3
+
+            except IndexError as ie:
+                print(f"line_index out of range {line_index + 1}: {str(ie)}")
+                line_index += 1
+            except ValueError as ve:
+                print(f"Invalid flashcard format at line {line_index + 1}: {str(ve)}")
+                line_index += 1
+            except Exception as e:
+                print(f"Unexpected error at line {line_index + 1}: {str(e)}")
                 line_index += 1
 
         if self.flashcards:
