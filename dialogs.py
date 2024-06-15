@@ -1,11 +1,17 @@
 import wx
 
+# COMPLETE ------------------------------------------------------------------------------------
+# TODO: Allow different card decks to be created and saved.
+# Probably will need a new window to select the deck
+# Will need a way to write to the correct deck file
+# COMPLETE ------------------------------------------------------------------------------------
+
 class NewFileDialogue(wx.Dialog):
     
     # A custom dialog class for creating a new file.
-    def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, wx.ID_ANY, "New File", size=(300, 250))
-
+    def __init__(self, parent, selectedDeck):
+        super().__init__(parent, title="New Flashcard")
+        self.selectedDeck = selectedDeck # Get the selected deck from DeckSelectionDialogue
         self.sizer = wx.BoxSizer(wx.VERTICAL)
 
         # Create labels
@@ -40,13 +46,63 @@ class NewFileDialogue(wx.Dialog):
         answer = self.text2.GetValue()
         label = self.text3.GetValue()
 
-        # Print the values to the console
-        with open("quiz.txt", "a") as file:
-            file.write("\n")
-            file.write(f"Question: {question}\n")
-            file.write(f"Answer: {answer}\n")
-            file.write(f"Label: {label}\n")
-            
-
+        # Write the values to the file
+        try:
+            with open(self.selectedDeck, "a") as file:
+                file.write("\n")
+                file.write(f"Question: {question}\n")
+                file.write(f"Answer: {answer}\n")
+                file.write(f"Label: {label}\n")
+            wx.MessageBox("Flashcard created successfully!", "Success", wx.OK | wx.ICON_INFORMATION)
+        except Exception as e:
+            wx.MessageBox(f"An error occurred: {e}", "Error", wx.OK | wx.ICON_ERROR)
+        
+        # Clear the text fields
+        self.text1.SetValue("")
+        self.text2.SetValue("")
+        self.text3.SetValue("")
+        self.text1.SetFocus()
         # Close the dialog
-        self.Close()
+        # self.Close()
+
+class DeckSelectionDialog(wx.Dialog):
+    def __init__(self, parent):
+        super().__init__(parent, title="Select or Create Deck")
+        self.sizer = wx.BoxSizer(wx.VERTICAL)
+        
+        # Option to select an existing deck
+        self.loadButton = wx.Button(self, label="Load Existing Deck")
+        self.sizer.Add(self.loadButton, 0, wx.ALL, 5)
+        self.loadButton.Bind(wx.EVT_BUTTON, self.onLoadDeck)
+        
+        # Option to create a new deck
+        self.createButton = wx.Button(self, label="Create New Deck")
+        self.sizer.Add(self.createButton, 0, wx.ALL, 5)
+        self.createButton.Bind(wx.EVT_BUTTON, self.onCreateDeck)
+        
+        self.SetSizer(self.sizer)
+        self.selectedDeck = None
+
+    def onLoadDeck(self, event):
+        with wx.FileDialog(self, "Select deck file", wildcard="Text files (*.txt)|*.txt",
+                           style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
+            if fileDialog.ShowModal() == wx.ID_CANCEL:
+                return
+            self.selectedDeck = fileDialog.GetPath()
+        self.EndModal(wx.ID_OK)
+
+    def onCreateDeck(self, event):
+        with wx.TextEntryDialog(self, "Enter name for new deck:", "Create New Deck") as textDialog:
+            if textDialog.ShowModal() == wx.ID_CANCEL:
+                return
+            self.selectedDeck = textDialog.GetValue() + ".txt"
+            with open (self.selectedDeck, "a") as file: 
+                pass  # Deck file is created if it doesn't exist and if it does exist, is just left open for appending
+        
+        newFileDialo = NewFileDialogue(self, self.selectedDeck)
+        newFileDialo.ShowModal()
+        # self.NewFileDialogue(self.selectedDeck)
+        self.EndModal(wx.ID_OK)
+
+    def getSelectedDeck(self):
+        return self.selectedDeck
