@@ -1,7 +1,7 @@
 import wx
 import wx.aui
 from flashcardapp import FlashcardApp
-from dialogs import NewFileDialogue
+from dialogs import NewFileDialogue, DeckSelectionDialog
 
 class MenuFrame(wx.Frame):
     def __init__(self, parent, title):
@@ -51,9 +51,14 @@ class MenuFrame(wx.Frame):
 
 
     def OnNew(self, event):
-        nfdialogue = NewFileDialogue(self)
-        nfdialogue.ShowModal()
-        nfdialogue.Destroy()
+        deckSelect = DeckSelectionDialog(self)
+        if deckSelect.ShowModal() == wx.ID_OK:
+            selectedDeck = deckSelect.getSelectedDeck()
+        deckSelect.Destroy()
+        if selectedDeck: # Ensure selectedDeck is not None
+            nfdialogue = NewFileDialogue(self, selectedDeck)
+            nfdialogue.ShowModal()
+            nfdialogue.Destroy()
     
     def OnAbout(self, event):
         nfdialogue = wx.MessageDialog(self, "A quiz maker.", "About Quiz Maker", wx.OK)

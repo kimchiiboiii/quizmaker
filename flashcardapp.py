@@ -1,3 +1,4 @@
+from dialogs import DeckSelectionDialog
 import wx
 
 class Flashcard:
@@ -38,12 +39,25 @@ class FlashcardApp(wx.Frame):
         sizer.Add(buttons_grid, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.TOP, 60)
         self.SetSizer(sizer)
         self.Layout()
-        self.load_flashcards("quiz.txt")
+        self.select_deck()
+        # self.load_flashcards("quiz.txt")
 
+    
+    def select_deck(self):
+        deckSelect = DeckSelectionDialog(self)
+        if deckSelect.ShowModal() == wx.ID_OK:
+            selectedDeck = deckSelect.getSelectedDeck()
+        deckSelect.Destroy()
+
+        if selectedDeck: # Ensure selectedDeck is not None
+            self.load_flashcards(selectedDeck)
+    
+    
+    
     def load_flashcards(self, filename: str) -> None:
         
         # Reads flashcard data from a file, parses the content, and stores the flashcards in a list.
-        
+    
     
         with open(filename, 'r') as file:
             lines = file.readlines()
