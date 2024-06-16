@@ -63,7 +63,6 @@ class NewFileDialogue(wx.Dialog):
         self.text3.SetValue("")
         self.text1.SetFocus()
         # Close the dialog
-        # self.Close()
 
 class DeckSelectionDialog(wx.Dialog):
     def __init__(self, parent):
@@ -101,7 +100,6 @@ class DeckSelectionDialog(wx.Dialog):
         
         newFileDialo = NewFileDialogue(self, self.selectedDeck)
         newFileDialo.ShowModal()
-        # self.NewFileDialogue(self.selectedDeck)
         self.EndModal(wx.ID_OK)
 
     def getSelectedDeck(self):

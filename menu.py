@@ -52,13 +52,15 @@ class MenuFrame(wx.Frame):
 
     def OnNew(self, event):
         deckSelect = DeckSelectionDialog(self)
-        if deckSelect.ShowModal() == wx.ID_OK:
-            selectedDeck = deckSelect.getSelectedDeck()
+        selectedDeck = (deckSelect.getSelectedDeck() if 
+                        deckSelect.ShowModal() == wx.ID_OK else None)  
         deckSelect.Destroy()
-        if selectedDeck: # Ensure selectedDeck is not None
-            nfdialogue = NewFileDialogue(self, selectedDeck)
-            nfdialogue.ShowModal()
-            nfdialogue.Destroy()
+        
+        if not selectedDeck: # If user does not select a deck, simply return.
+            return
+        nfdialogue = NewFileDialogue(self, selectedDeck)
+        nfdialogue.ShowModal()
+        nfdialogue.Destroy()
     
     def OnAbout(self, event):
         nfdialogue = wx.MessageDialog(self, "A quiz maker.", "About Quiz Maker", wx.OK)
@@ -74,7 +76,6 @@ class MenuFrame(wx.Frame):
         self.flashcard_app.Show(True)
 
     def createPane(self):
-        # mgr = wx.aui.AuiManager(self)
         text1 = wx.TextCtrl(self)
         self.mgr.AddPane(text1, wx.aui.AuiPaneInfo().Bottom().BestSize(
             wx.Size(200, 200)))
