@@ -1,11 +1,5 @@
 import wx
 
-# COMPLETE ------------------------------------------------------------------------------------
-# TODO: Allow different card decks to be created and saved.
-# Probably will need a new window to select the deck
-# Will need a way to write to the correct deck file
-# COMPLETE ------------------------------------------------------------------------------------
-
 class NewFileDialogue(wx.Dialog):
     
     # A custom dialog class for creating a new file.

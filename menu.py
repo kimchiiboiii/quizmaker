@@ -3,9 +3,20 @@ import wx.aui
 from flashcardapp import FlashcardApp
 from dialogs import NewFileDialogue, DeckSelectionDialog
 
+class Frame1(wx.Frame):
+    def __init__(self, parent, title):
+        wx.Frame.__init__(self, parent, title=title, size=(540, 720))
+
+class Frame2(wx.Frame):
+    def __init__(self, parent, title):
+        wx.Frame.__init__(self, parent, title=title, size=(540, 720))
+
+
 class MenuFrame(wx.Frame):
     def __init__(self, parent, title):
         wx.Frame.__init__(self, parent, title=title, size=(1080, 720))
+        # frame1 = Frame1(self, "Frame 1")
+        # frame2 = Frame2(self, "Frame 2")
         # self.control = wx.TextCtrl(self, style=wx.TE_MULTILINE)
         self.mgr = wx.aui.AuiManager(self)
         self.CreateStatusBar()

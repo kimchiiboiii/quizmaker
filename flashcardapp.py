@@ -40,9 +40,7 @@ class FlashcardApp(wx.Frame):
         self.SetSizer(sizer)
         self.Layout()
         self.select_deck()
-        # self.load_flashcards("quiz.txt")
 
-    
     def select_deck(self):
         deckSelect = DeckSelectionDialog(self)
         if deckSelect.ShowModal() == wx.ID_OK:
@@ -55,41 +53,30 @@ class FlashcardApp(wx.Frame):
     
     
     def load_flashcards(self, filename: str) -> None:
-        
-        # Reads flashcard data from a file, parses the content, and stores the flashcards in a list.
-    
-    
+
         with open(filename, 'r') as file:
             lines = file.readlines()
         
         self.flashcards = []
         line_index = 0
+        
         while line_index < len(lines):
-            if lines[line_index].strip() == "": # Once we hit an empty line, skip one line then continue loop
+            if lines[line_index].strip() == "":
                 line_index += 1
                 continue
             
-            # Checks if text matches the correct format
-            # Format: 3 lines with "Question: ", "Answer: ", and "Label: "
-            # followed by a blank line. 
-            try: 
-                if line_index + 2 < len(lines) and \
-                all(": " in lines[count] for count in range(line_index, line_index + 3)):
-                    
+            try:
+                if line_index + 2 < len(lines) and all(": " in lines[count] for count in range(line_index, line_index + 3)):
                     questions, answer, label = [line.strip().split(": ")[1] for line in lines[line_index:line_index + 3]]
                     self.flashcards.append(Flashcard(questions, answer, label))
                     line_index += 3
-
-            except IndexError as ie:
-                print(f"line_index out of range {line_index + 1}: {str(ie)}")
-                line_index += 1
-            except ValueError as ve:
-                print(f"Invalid flashcard format at line {line_index + 1}: {str(ve)}")
-                line_index += 1
+            except (IndexError, ValueError) as e:
+                print(f"Error at line {line_index + 1}: {str(e)}")
             except Exception as e:
                 print(f"Unexpected error at line {line_index + 1}: {str(e)}")
+            finally:
                 line_index += 1
-
+        
         if self.flashcards:
             self.show_flashcard()
         else:
@@ -100,6 +87,8 @@ class FlashcardApp(wx.Frame):
         flashcard = self.flashcards[self.current_card]
         self.question_label.SetLabel(flashcard.question)
         self.answer_label.SetLabel(flashcard.answer)
+        self.answer_label.Wrap(250)
+        self.answer_label.SetWindowStyle(wx.ALIGN_CENTER)
 
     def on_show(self, event):
         if self.answer_label.IsShown():
@@ -121,5 +110,6 @@ class FlashcardApp(wx.Frame):
         import random
         random.shuffle(self.flashcards)
         self.current_card = 0
+        self.answer_label.Hide()
         self.show_flashcard()
         self.Layout()
