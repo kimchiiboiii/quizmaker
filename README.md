@@ -23,5 +23,5 @@ File > New > Load Existing Deck - to add new flashcards to an already existing d
 File > New > Create a New Deck - to create a new flashcard deck .txt file in the current directory <br>
 <br>
 Load and use flashcard deck: <br>
-File > Load > Load Existing Deck - load a flashcard deck then display it
+File > Load > Load Existing Deck - load a flashcard deck then displays it. <br>
 File > Load > Create a New Deck - **WIP** currently it just does the same thing as "File > New > Create a New Deck" will change soon.
