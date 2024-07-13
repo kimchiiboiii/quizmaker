@@ -1,6 +1,7 @@
 ## Flashcard App (WIP)
 
-App for creating and showing flashcards from a .txt file.
+Program is ran by running the quiz.py file. <br>
+<br> App for creating and showing flashcards from a .txt file.
 The flashcard .txt file must follow this format:
 
 Question: *"Your Question"* <br>
